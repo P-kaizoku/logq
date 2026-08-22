@@ -10,17 +10,20 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
+	ipbook := make(map[string]int)
 	for scanner.Scan() {
-		fields := strings.Fields(scanner.Text())
-		// line := scanner.Text()
-		// n := strings.IndexByte(line, ' ')
-		// ip := line[:n]
 
-		if len(fields) == 0 {
+		line := scanner.Text()
+		n := strings.IndexByte(line, ' ')
+		if n < 0 {
 			continue
 		}
-		fmt.Println(fields[0])
+		ip := line[:n]
 
-		// fmt.Println(ip)
+		ipbook[ip]++
+	}
+
+	for k, v := range ipbook {
+		fmt.Println(k, v)
 	}
 }
