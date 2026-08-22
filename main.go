@@ -11,7 +11,16 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
+		fields := strings.Fields(scanner.Text())
+		// line := scanner.Text()
+		// n := strings.IndexByte(line, ' ')
+		// ip := line[:n]
 
-		fmt.Println(strings.Fields(scanner.Text())[0])
+		if len(fields) == 0 {
+			continue
+		}
+		fmt.Println(fields[0])
+
+		// fmt.Println(ip)
 	}
 }
