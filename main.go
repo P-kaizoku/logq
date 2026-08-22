@@ -51,33 +51,29 @@ func main() {
 
 	switch *field {
 	case "ip":
-		TopNIps(*n)
+		top(ipbook, *n)
 	case "status":
-		TopStatus(*n)
+		top(statusbook, *n)
 	}
 
 }
 
 func ParseStatus(line string) (string, bool) {
-	n := strings.LastIndexByte(line, '-')
-	if n < 0 {
-		return "", false
+	for f := range strings.FieldsSeq(line) {
+		if len(f) == 3 && isDigits(f) {
+			return f, true
+		}
 	}
-	line = line[:n-1]
+	return "", false
+}
 
-	i2 := strings.LastIndexByte(line, ' ')
-	if i2 < 0 {
-		return "", false
+func isDigits(s string) bool {
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
 	}
-	i1 := strings.LastIndexByte(line[:i2], ' ')
-	if i1 < 0 {
-		return "", false
-	}
-
-	status := line[i1+1 : i2]
-
-	return status, true
-
+	return true
 }
 
 func ParseIPs(line string) (string, bool) {
@@ -90,33 +86,20 @@ func ParseIPs(line string) (string, bool) {
 
 }
 
-func TopNIps(n int) {
-	var top []IPentry
-	for k, v := range ipbook {
-		top = append(top, IPentry{ip: k, count: v})
+func top(m map[string]int, n int) {
+	type entry struct {
+		key   string
+		count int
 	}
 
-	sort.Slice(top, func(i, j int) bool {
-		return top[i].count > top[j].count
-	})
+	var top []entry
 
+	for k, v := range m {
+		top = append(top, entry{k, v})
+	}
+	sort.Slice(top, func(i, j int) bool { return top[i].count > top[j].count })
 	for i := 0; i < n && i < len(top); i++ {
-		fmt.Println(top[i].ip, " --> ", top[i].count)
-	}
-}
-
-func TopStatus(n int) {
-	var top []StatusEntry
-	for k, v := range statusbook {
-		top = append(top, StatusEntry{status: k, count: v})
-	}
-
-	sort.Slice(top, func(i, j int) bool {
-		return top[i].count > top[j].count
-	})
-
-	for i := 0; i < n && i < len(top); i++ {
-		fmt.Println(top[i].status, " --> ", top[i].count)
+		fmt.Println(top[i].key, " --> ", top[i].count)
 	}
 
 }
