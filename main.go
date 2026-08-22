@@ -28,6 +28,7 @@ func main() {
 	field := flag.String("field", "ip", "ip | status")
 	n := flag.Int("n", 10, "how many top entries")
 	flag.Parse()
+
 	for scanner.Scan() {
 		line := scanner.Text()
 
