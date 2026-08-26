@@ -1,3 +1,5 @@
+.PHONY: logs run
+
 run:
 	@go run .
 
